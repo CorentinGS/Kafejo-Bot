@@ -2,7 +2,7 @@ package commands
 
 import (
 	"context"
-	"github.com/corentings/kafejo-bot/commands/version"
+	"github.com/corentings/kafejo-bot/app/commands/version"
 	"github.com/corentings/kafejo-bot/data/cmdHandler"
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/api/cmdroute"

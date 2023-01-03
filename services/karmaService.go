@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/corentings/kafejo-bot/commands/karma"
+	"github.com/corentings/kafejo-bot/app/commands/karma"
 	"github.com/corentings/kafejo-bot/data/cmdHandler"
 	"github.com/corentings/kafejo-bot/data/infrastructures"
 	"github.com/corentings/kafejo-bot/data/repositories"

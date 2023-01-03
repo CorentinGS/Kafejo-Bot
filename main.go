@@ -2,7 +2,8 @@ package main
 
 import (
 	"context"
-	"github.com/corentings/kafejo-bot/commands"
+	"github.com/corentings/kafejo-bot/app/commands"
+	"github.com/corentings/kafejo-bot/app/events"
 	"github.com/corentings/kafejo-bot/data/infrastructures"
 	"github.com/corentings/kafejo-bot/models"
 	"github.com/corentings/kafejo-bot/utils"
@@ -52,8 +53,11 @@ func main() {
 	}
 
 	h := commands.NewHandler(state.New("Bot " + token))
+	events.RegisterHandlers(h)
 	h.S.AddInteractionHandler(h)
-	h.S.AddIntents(gateway.IntentGuilds)
+	h.S.AddIntents(gateway.IntentGuildMessages)
+	h.S.AddIntents(gateway.IntentGuildMessageReactions)
+	h.S.AddIntents(gateway.IntentGuildMembers)
 	h.S.AddHandler(func(event *gateway.ReadyEvent) {
 		me, _ := h.S.Me()
 		log.Info().Msgf("connected to the gateway as %s", me.Tag())
