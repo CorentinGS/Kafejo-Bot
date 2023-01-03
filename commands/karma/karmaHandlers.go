@@ -21,22 +21,26 @@ func (k *Command) AddKarmaCommand() cmdroute.CommandHandlerFunc {
 	return func(ctx context.Context, data cmdroute.CommandData) *api.InteractionResponseData {
 		options := data.Options
 
-		log.Debug().Msgf("AddKarmaCommand: %v", options)
-
 		if options[0].String() == data.Event.Member.User.ID.String() {
 			log.Info().Msgf("User %v tried to add karma to himself", data.Event.Member.User.ID.String())
 			return &api.InteractionResponseData{
-				Embeds: views.NewEmbeds(views.Forbidden("You can't add karma to yourself")),
+				Embeds: views.NewEmbeds(views.Forbidden()),
 				Flags:  discord.EphemeralMessage}
 		}
 
 		karma, err := k.IncrementKarma(options[0].String(), data.Event.GuildID.String())
 		if err != nil {
 			log.Error().Msgf("Error incrementing karma: %v", err)
-			return &api.InteractionResponseData{Content: option.NewNullableString("Error while incrementing karma"), Flags: discord.EphemeralMessage}
+			return &api.InteractionResponseData{
+				Embeds: views.NewEmbeds(
+					views.Error("Error incrementing karma", err.Error())),
+				Flags: discord.EphemeralMessage}
 		}
 
-		return &api.InteractionResponseData{Content: option.NewNullableString(karma.GetKarmaAsString()), Flags: discord.EphemeralMessage}
+		return &api.InteractionResponseData{
+			Embeds: views.NewEmbeds(
+				views.Success("Karma added", karma.GetKarmaAsString())),
+			Flags: discord.EphemeralMessage}
 	}
 }
 
@@ -45,8 +49,6 @@ func (k *Command) ShowKarmaCommand() cmdroute.CommandHandlerFunc {
 		options := data.Options
 
 		var userID string
-
-		log.Debug().Msgf("ShowKarmaCommand: %v", options)
 
 		// Check if options is empty
 		if len(options) == 0 {

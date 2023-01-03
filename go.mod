@@ -4,7 +4,6 @@ go 1.19
 
 require (
 	github.com/diamondburned/arikawa/v3 v3.2.0
-	github.com/jackc/pgconn v1.13.0
 	github.com/joho/godotenv v1.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/rs/zerolog v1.15.0
@@ -16,6 +15,7 @@ require (
 	github.com/gorilla/schema v1.2.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
+	github.com/jackc/pgconn v1.13.0 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgproto3/v2 v2.3.1 // indirect

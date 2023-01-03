@@ -1,0 +1,35 @@
+package views
+
+import "github.com/diamondburned/arikawa/v3/discord"
+
+func Error(message, err string) discord.Embed {
+	return discord.Embed{
+		Title:       message,
+		Description: err,
+		Color:       0xFF0000,
+	}
+}
+
+func Success(message, description string) discord.Embed {
+	return discord.Embed{
+		Title:       message,
+		Description: description,
+		Color:       0x00FF00,
+	}
+}
+
+func Warning(message, description string) discord.Embed {
+	return discord.Embed{
+		Title:       message,
+		Description: description,
+		Color:       0xFFFF00,
+	}
+}
+
+func Forbidden() discord.Embed {
+	return Error("Forbidden", "You don't have permission to do that.")
+}
+
+func NewEmbeds(embed ...discord.Embed) *[]discord.Embed {
+	return &embed
+}

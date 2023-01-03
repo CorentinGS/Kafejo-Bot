@@ -57,20 +57,17 @@ func (KarmaService *KarmaService) GetTopKarma(guildID string) ([]models.Karma, e
 }
 
 func (KarmaService *KarmaService) IncrementKarma(userID, guildID string) (models.Karma, error) {
-	userKarma, err := KarmaService.GetKarma(userID, guildID)
-	if err != nil {
-		return models.Karma{}, err
-	}
+	userKarma, _ := KarmaService.GetKarma(userID, guildID)
 
 	if userKarma.ID == 0 {
 		userKarma = models.Karma{UserID: userID, GuildID: guildID, Value: 1}
-		_, err = KarmaService.CreateKarma(userKarma)
+		_, err := KarmaService.CreateKarma(userKarma)
 		if err != nil {
 			return models.Karma{}, err
 		}
 	} else {
 		userKarma.AddKarma(1)
-		_, err = KarmaService.UpdateKarma(userKarma)
+		_, err := KarmaService.UpdateKarma(userKarma)
 		if err != nil {
 			return models.Karma{}, err
 		}
