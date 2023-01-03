@@ -13,13 +13,13 @@ type Member struct {
 func (m Member) GuildMemberAddEvent() func(c *gateway.GuildMemberAddEvent) {
 	log.Debug().Msgf("Registering GuildMemberAddEvent")
 	return func(c *gateway.GuildMemberAddEvent) {
-		log.Info().Msgf("Member added: %s", c.User.ID)
+		log.Debug().Msgf("Member added: %s", c.User.ID)
 	}
 }
 
 func (m Member) GuildMemberRemoveEvent() func(c *gateway.GuildMemberRemoveEvent) {
 	log.Debug().Msgf("Registering GuildMemberRemoveEvent")
 	return func(c *gateway.GuildMemberRemoveEvent) {
-		log.Info().Msgf("Member removed: %s", c.User.ID)
+		log.Debug().Msgf("Member removed: %s", c.User.ID)
 	}
 }

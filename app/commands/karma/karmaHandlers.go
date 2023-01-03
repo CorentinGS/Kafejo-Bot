@@ -22,7 +22,7 @@ func (k *Command) AddKarmaCommand() cmdroute.CommandHandlerFunc {
 		options := data.Options
 
 		if options[0].String() == data.Event.Member.User.ID.String() {
-			log.Info().Msgf("User %v tried to add karma to himself", data.Event.Member.User.ID.String())
+			log.Debug().Msgf("User %v tried to add karma to himself", data.Event.Member.User.ID.String())
 			return &api.InteractionResponseData{
 				Embeds: views.NewEmbeds(views.Forbidden()),
 				Flags:  discord.EphemeralMessage}
@@ -30,7 +30,7 @@ func (k *Command) AddKarmaCommand() cmdroute.CommandHandlerFunc {
 
 		karma, err := k.IncrementKarma(options[0].String(), data.Event.GuildID.String())
 		if err != nil {
-			log.Error().Msgf("Error incrementing karma: %v", err)
+			log.Warn().Msgf("Error incrementing karma: %v", err)
 			return &api.InteractionResponseData{
 				Embeds: views.NewEmbeds(
 					views.Error("Error incrementing karma", err.Error())),
@@ -61,7 +61,7 @@ func (k *Command) ShowKarmaCommand() cmdroute.CommandHandlerFunc {
 		if err != nil {
 			karma, err = k.CreateKarma(models.Karma{UserID: userID, GuildID: data.Event.GuildID.String(), Value: 0})
 			if err != nil {
-				log.Error().Msgf("Error creating karma: %v", err)
+				log.Warn().Msgf("Error creating karma: %v", err)
 				return &api.InteractionResponseData{
 					Embeds: views.NewEmbeds(
 						views.Error("Error creating karma", err.Error())),

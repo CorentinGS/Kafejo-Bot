@@ -13,3 +13,16 @@ const (
 	SQLMaxIdleConns    = 10
 	CacheExpireMinutes = 2
 )
+
+const (
+	ConfigRoleAdmin         = "1059086726565462136"
+	ConfigRoleMod           = "1059086750921801749"
+	ConfigOwnerID           = "282233191916634113"
+	ConfigMainRole          = "1059086753425805354"
+	ConfigGuildID           = "560798438099255296"
+	ConfigGateKeepChannelID = "1059086776368631878"
+	ConfigLogsChannelID     = "960577800589434950"
+	ConfigWelcomeChannelID  = "1059086801203105863"
+	ConfigAdminChannelID    = "1059086820442382348"
+	ConfigWelcomeMessageID  = "1059230677591150602"
+)

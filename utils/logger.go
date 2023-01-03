@@ -25,13 +25,13 @@ func CreateLogger() {
 		log.Logger = log.Output(prettyLogger()).With().Caller().Logger()
 	case "info":
 		zerolog.SetGlobalLevel(zerolog.InfoLevel)
-		log.Logger = log.With().Caller().Logger()
+		log.Logger = log.Output(prettyLogger()).With().Caller().Logger()
 	case "warn":
 		zerolog.SetGlobalLevel(zerolog.WarnLevel)
-		log.Logger = log.With().Caller().Logger()
+		log.Logger = log.Output(prettyLogger()).With().Caller().Logger()
 	case "error":
 		zerolog.SetGlobalLevel(zerolog.ErrorLevel)
-		log.Logger = log.With().Caller().Logger()
+		log.Logger = log.Output(prettyLogger()).With().Caller().Logger()
 	case "none":
 		zerolog.SetGlobalLevel(zerolog.Disabled)
 	default:
