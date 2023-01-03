@@ -1,2 +1,2 @@
-# Stouuf
-A simple bot to help us administrate Stouuf Discord server.
+# Kafejo bot
+A simple bot to help us administrate our discord server.
