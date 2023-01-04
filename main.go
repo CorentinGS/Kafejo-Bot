@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/corentings/kafejo-bot/app/commands"
+	"github.com/corentings/kafejo-bot/app/commands/common"
 	"github.com/corentings/kafejo-bot/app/events"
 	"github.com/corentings/kafejo-bot/data/infrastructures"
 	"github.com/corentings/kafejo-bot/models"
@@ -52,6 +53,8 @@ func main() {
 		}
 	}
 
+	go common.CreateSenderWorker()
+
 	h := commands.NewHandler(state.New("Bot " + token))
 	events.RegisterHandlers(h)
 	h.S.AddInteractionHandler(h)
@@ -70,4 +73,7 @@ func main() {
 	if err = h.S.Connect(context.TODO()); err != nil {
 		log.Fatal().Msgf("cannot connect: %s", err)
 	}
+
+	// Create a channel to block the main thread
+	<-make(chan struct{})
 }
