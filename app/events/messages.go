@@ -4,6 +4,8 @@ import (
 	"github.com/corentings/kafejo-bot/app/commands/common"
 	"github.com/corentings/kafejo-bot/interfaces"
 	"github.com/corentings/kafejo-bot/utils"
+	"github.com/corentings/kafejo-bot/views"
+	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/gateway"
 	"github.com/rs/zerolog/log"
@@ -104,6 +106,42 @@ func (m Message) MessageCreateEvent() func(c *gateway.MessageCreateEvent) {
 func (m Message) MessageReactionAddEvent() func(c *gateway.MessageReactionAddEvent) {
 	log.Debug().Msg("Registering MessageReactionAddEvent")
 	return func(c *gateway.MessageReactionAddEvent) {
+		if c.GuildID.String() != utils.ConfigGuildID {
+			return
+		}
+		if c.ChannelID.String() != utils.ConfigGateKeepChannelID || c.MessageID.String() != utils.ConfigWelcomeMessageID {
+			return
+		}
+		if c.Emoji.Name != "☕" {
+			return
+		}
+
 		log.Debug().Msgf("Message reaction added: %s", c.MessageID)
+
+		// Convert roleID to snowflake
+		roleID, err := discord.ParseSnowflake(utils.ConfigMainRole)
+
+		err = m.GetState().AddRole(c.GuildID, c.UserID, discord.RoleID(roleID), api.AddRoleData{AuditLogReason: "User reacted to welcome message"})
+		if err != nil {
+			log.Error().Err(err).Msg("Error adding role to user")
+			return
+		}
+
+		log.Debug().Msgf("Added role %s to user %s", roleID, c.UserID)
+
+		// Remove the reaction
+		err = m.GetState().DeleteUserReaction(c.ChannelID, c.MessageID, c.UserID, discord.APIEmoji(c.Emoji.Name))
+		if err != nil {
+			log.Error().Err(err).Msg("Error removing reaction")
+			return
+		}
+
+		welcomeChan, err := discord.ParseSnowflake(utils.ConfigWelcomeChannelID)
+
+		welcomeEmbed := views.Welcome(c.Member)
+		common.AddEmbedToQueue(common.MessageItem{
+			Embed:   welcomeEmbed,
+			Channel: discord.ChannelID(welcomeChan),
+		})
 	}
 }

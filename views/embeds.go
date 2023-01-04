@@ -1,6 +1,9 @@
 package views
 
-import "github.com/diamondburned/arikawa/v3/discord"
+import (
+	"fmt"
+	"github.com/diamondburned/arikawa/v3/discord"
+)
 
 func Error(message, err string) discord.Embed {
 	return discord.Embed{
@@ -32,4 +35,12 @@ func Forbidden() discord.Embed {
 
 func NewEmbeds(embed ...discord.Embed) *[]discord.Embed {
 	return &embed
+}
+
+func Welcome(member *discord.Member) discord.Embed {
+	return discord.Embed{
+		Title:       "Welcome",
+		Description: fmt.Sprintf("Welcome to the server, %s!\nPlease read the rules and enjoy your stay!", member.Mention()),
+		Color:       0x00FF00,
+	}
 }

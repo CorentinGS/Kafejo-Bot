@@ -24,5 +24,5 @@ const (
 	ConfigLogsChannelID     = "960577800589434950"
 	ConfigWelcomeChannelID  = "1059086801203105863"
 	ConfigAdminChannelID    = "1059086820442382348"
-	ConfigWelcomeMessageID  = "1059230677591150602"
+	ConfigWelcomeMessageID  = "1060225318453002351"
 )
