@@ -1,5 +1,7 @@
 package utils
 
+import "github.com/diamondburned/arikawa/v3/discord"
+
 const (
 	GITHUB  = "https://github.com/CorentinGS/Kafejo-Bot"
 	VERSION = "v0.1.0"
@@ -26,3 +28,8 @@ const (
 	ConfigAdminChannelID    = "1059086820442382348"
 	ConfigWelcomeMessageID  = "1060225318453002351"
 )
+
+func GetGuildID() discord.GuildID {
+	guildID, _ := discord.ParseSnowflake(ConfigGuildID)
+	return discord.GuildID(guildID)
+}

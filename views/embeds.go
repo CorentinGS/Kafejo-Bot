@@ -40,7 +40,7 @@ func NewEmbeds(embed ...discord.Embed) *[]discord.Embed {
 func Welcome(member *discord.Member) discord.Embed {
 	return discord.Embed{
 		Title:       "Welcome",
-		Description: fmt.Sprintf("Welcome to the server, %s!\nPlease read the rules and enjoy your stay!", member.Mention()),
+		Description: fmt.Sprintf("Welcome to the kafejo, %s!\nPlease take a sit and order a coffee ☕.", member.Mention()),
 		Color:       0x00FF00,
 	}
 }
