@@ -25,6 +25,10 @@ const (
 	LogTypeGuildMemberRemove
 	// LogDangerousMemberAdd is a dangerous member log
 	LogDangerousMemberAdd
+	// LogTypeMemberRoleAdd is a member role add log
+	LogTypeMemberRoleAdd
+	// LogTypeMemberRoleRemove is a member role remove log
+	LogTypeMemberRoleRemove
 )
 
 func (l LogType) String() string {
@@ -43,6 +47,10 @@ func (l LogType) String() string {
 		return "Guild member removed"
 	case LogDangerousMemberAdd:
 		return "Danger Will Robinson 🤖"
+	case LogTypeMemberRoleAdd:
+		return "Member role added"
+	case LogTypeMemberRoleRemove:
+		return "Member role removed"
 	default:
 		return "Unknown"
 	}
@@ -63,6 +71,10 @@ func (l LogType) Color() int {
 	case LogTypeGuildMemberRemove:
 		return 0xFF00FF
 	case LogDangerousMemberAdd:
+		return 0xFF0000
+	case LogTypeMemberRoleAdd:
+		return 0x00FF00
+	case LogTypeMemberRoleRemove:
 		return 0xFF0000
 	default:
 		return 0x000000
@@ -178,5 +190,25 @@ func DangerMemberLogger(member discord.User, danger MemberDangerLevel) Logger {
 			member.Tag(), danger.String(), utils.FormatTimeSince(member.CreatedAt()),
 			member.CreatedAt().Format("2006-01-02 15:04:05"),
 		),
+	}
+}
+
+func MemberRoleAddLogger(member discord.User, role discord.RoleID) Logger {
+	return Logger{
+		Type:   LogTypeMemberRoleAdd,
+		Author: member,
+		Footer: &discord.EmbedFooter{Text: "Role ID: " + role.String()},
+		Message: fmt.Sprintf("A role has been added to a member: %s\n\nRole: <@&%s>",
+			member.Tag(), role),
+	}
+}
+
+func MemberRoleRemoveLogger(member discord.User, role discord.RoleID) Logger {
+	return Logger{
+		Type:   LogTypeMemberRoleRemove,
+		Author: member,
+		Footer: &discord.EmbedFooter{Text: "Role ID: " + role.String()},
+		Message: fmt.Sprintf("A role has been removed from a member: %s\n\nRole: <@&%s>",
+			member.Tag(), role),
 	}
 }

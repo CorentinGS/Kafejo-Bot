@@ -24,4 +24,6 @@ func RegisterHandlers(handler *cmdHandler.HandlerModel) {
 	handler.AddSyncHandler(member.GuildMemberAddEvent())
 
 	handler.AddSyncHandler(member.GuildMemberRemoveEvent())
+
+	handler.AddSyncHandler(member.GuildMemberUpdateEvent())
 }

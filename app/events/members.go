@@ -61,3 +61,36 @@ func (m Member) GuildMemberRemoveEvent() func(c *gateway.GuildMemberRemoveEvent)
 		})
 	}
 }
+
+func (m Member) GuildMemberUpdateEvent() func(c *gateway.GuildMemberUpdateEvent) {
+	log.Debug().Msgf("Registering GuildMemberUpdateEvent")
+	return func(c *gateway.GuildMemberUpdateEvent) {
+		if c.GuildID.String() != utils.ConfigGuildID {
+			return
+		}
+
+		member, _ := m.GetState().Member(c.GuildID, c.User.ID)
+		newMember := c.RoleIDs
+
+		// Check the difference between the old and new roles
+		// If the difference is 1, then it's a role add or remove
+		// If the difference is more than 1, then it's a role update
+		if len(member.RoleIDs) != len(newMember) {
+			if len(member.RoleIDs) > len(newMember) {
+				// Role removed
+				role := utils.GetRoleDifference(member.RoleIDs, newMember)
+				common.AddEmbedToQueue(common.MessageItem{
+					Embed:   common.MemberRoleRemoveLogger(c.User, role).ToEmbed(),
+					Channel: common.GetLoggerChannel(),
+				})
+			} else {
+				// Role added
+				role := utils.GetRoleDifference(newMember, member.RoleIDs)
+				common.AddEmbedToQueue(common.MessageItem{
+					Embed:   common.MemberRoleAddLogger(c.User, role).ToEmbed(),
+					Channel: common.GetLoggerChannel(),
+				})
+			}
+		}
+	}
+}

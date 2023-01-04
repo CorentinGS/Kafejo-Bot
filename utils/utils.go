@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"github.com/corentings/kafejo-bot/data/cmdHandler"
+	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/state"
 	"strings"
 	"time"
@@ -59,4 +60,20 @@ func FormatTimeSince(old time.Time) string {
 func IsDefaultAvatar(avatar string) bool {
 	// Default avatar is "https://cdn.discordapp.com/embed/avatars/" + [0-5] + ".png"
 	return strings.HasPrefix(avatar, "https://cdn.discordapp.com/embed/avatars/") && strings.HasSuffix(avatar, ".png") && avatar[len(avatar)-5] >= '0' && avatar[len(avatar)-5] <= '5'
+}
+
+func GetRoleDifference(newRoles, oldRoles []discord.RoleID) discord.RoleID {
+	for _, newRole := range newRoles {
+		found := false
+		for _, oldRole := range oldRoles {
+			if newRole == oldRole {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return newRole
+		}
+	}
+	return 0
 }
