@@ -7,18 +7,22 @@ import (
 	"sync"
 )
 
+type MessageItem struct {
+	Embed   discord.Embed
+	Channel discord.ChannelID
+}
+
 var (
-	embedsChan = make(chan discord.Embed, 100)
+	embedsChan = make(chan MessageItem, 100)
 )
 
-func SendLogEmbed(embed discord.Embed) error {
+func SendLogEmbed(embed MessageItem) error {
 	session := utils.GetSession()
-	channel := GetLoggerChannel()
-	_, err := session.SendMessage(channel, "", embed)
+	_, err := session.SendMessage(embed.Channel, "", embed.Embed)
 	return err
 }
 
-func SenderWorker(embeds <-chan discord.Embed, wg *sync.WaitGroup) {
+func SenderWorker(embeds <-chan MessageItem, wg *sync.WaitGroup) {
 	log.Debug().Msgf("Sender worker created")
 	defer wg.Done()
 
@@ -42,6 +46,6 @@ func CreateSenderWorker() {
 	wg.Wait()
 }
 
-func AddEmbedToQueue(embed discord.Embed) {
+func AddEmbedToQueue(embed MessageItem) {
 	embedsChan <- embed
 }

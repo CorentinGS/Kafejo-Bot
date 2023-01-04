@@ -21,7 +21,10 @@ func (m Member) GuildMemberAddEvent() func(c *gateway.GuildMemberAddEvent) {
 		}
 
 		logEmbed := common.MemberAddLogger(&c.Member).ToEmbed()
-		common.AddEmbedToQueue(logEmbed)
+		common.AddEmbedToQueue(common.MessageItem{
+			Embed:   logEmbed,
+			Channel: common.GetLoggerChannel(),
+		})
 	}
 }
 
@@ -41,6 +44,9 @@ func (m Member) GuildMemberRemoveEvent() func(c *gateway.GuildMemberRemoveEvent)
 			logEmbed = common.MemberRemoveLogger(&c.User, member.RoleIDs).ToEmbed()
 		}
 
-		common.AddEmbedToQueue(logEmbed)
+		common.AddEmbedToQueue(common.MessageItem{
+			Embed:   logEmbed,
+			Channel: common.GetLoggerChannel(),
+		})
 	}
 }

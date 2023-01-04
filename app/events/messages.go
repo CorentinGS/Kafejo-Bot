@@ -28,7 +28,10 @@ func (m Message) MessageDeleteEvent() func(c *gateway.MessageDeleteEvent) {
 		} else {
 			logEmbed = common.MessageDeleteLogger(message).ToEmbed()
 		}
-		common.AddEmbedToQueue(logEmbed)
+		common.AddEmbedToQueue(common.MessageItem{
+			Embed:   logEmbed,
+			Channel: common.GetLoggerChannel(),
+		})
 	}
 }
 
@@ -45,7 +48,10 @@ func (m Message) MessageUpdateEvent() func(c *gateway.MessageUpdateEvent) {
 			return
 		}
 		logEmbed := common.MessageUpdateLogger(&c.Message, message.Content).ToEmbed()
-		common.AddEmbedToQueue(logEmbed)
+		common.AddEmbedToQueue(common.MessageItem{
+			Embed:   logEmbed,
+			Channel: common.GetLoggerChannel(),
+		})
 	}
 }
 
@@ -72,7 +78,10 @@ func (m Message) MessageCreateEvent() func(c *gateway.MessageCreateEvent) {
 				log.Debug().Msg("Join command")
 				member, _ := m.IHandler.GetState().Member(c.GuildID, c.Author.ID)
 				logEmbed := common.MemberAddLogger(member).ToEmbed()
-				common.AddEmbedToQueue(logEmbed)
+				common.AddEmbedToQueue(common.MessageItem{
+					Embed:   logEmbed,
+					Channel: common.GetLoggerChannel(),
+				})
 			case "leave":
 				log.Debug().Msg("Leave command")
 				member, err := m.IHandler.GetState().Member(c.GuildID, c.Message.Author.ID)
@@ -82,7 +91,10 @@ func (m Message) MessageCreateEvent() func(c *gateway.MessageCreateEvent) {
 				}
 
 				logEmbed := common.MemberRemoveLogger(&c.Message.Author, member.RoleIDs).ToEmbed()
-				common.AddEmbedToQueue(logEmbed)
+				common.AddEmbedToQueue(common.MessageItem{
+					Embed:   logEmbed,
+					Channel: common.GetLoggerChannel(),
+				})
 			}
 			return
 		}
