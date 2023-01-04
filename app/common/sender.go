@@ -10,6 +10,7 @@ import (
 type MessageItem struct {
 	Embed   discord.Embed
 	Channel discord.ChannelID
+	Content string
 }
 
 var (
@@ -18,7 +19,7 @@ var (
 
 func SendLogEmbed(embed MessageItem) error {
 	session := utils.GetSession()
-	_, err := session.SendMessage(embed.Channel, "", embed.Embed)
+	_, err := session.SendMessage(embed.Channel, embed.Content, embed.Embed)
 	return err
 }
 

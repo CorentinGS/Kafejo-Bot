@@ -55,3 +55,8 @@ func FormatTimeSince(old time.Time) string {
 
 	return b.String()
 }
+
+func IsDefaultAvatar(avatar string) bool {
+	// Default avatar is "https://cdn.discordapp.com/embed/avatars/" + [0-5] + ".png"
+	return strings.HasPrefix(avatar, "https://cdn.discordapp.com/embed/avatars/") && strings.HasSuffix(avatar, ".png") && avatar[len(avatar)-5] >= '0' && avatar[len(avatar)-5] <= '5'
+}

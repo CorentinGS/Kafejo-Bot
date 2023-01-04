@@ -1,7 +1,8 @@
 package events
 
 import (
-	common2 "github.com/corentings/kafejo-bot/app/common"
+	"fmt"
+	"github.com/corentings/kafejo-bot/app/common"
 	"github.com/corentings/kafejo-bot/interfaces"
 	"github.com/corentings/kafejo-bot/utils"
 	"github.com/corentings/kafejo-bot/views"
@@ -26,13 +27,13 @@ func (m Message) MessageDeleteEvent() func(c *gateway.MessageDeleteEvent) {
 		// Get the message from the cache
 		message, err := m.IHandler.GetState().Message(c.ChannelID, c.ID)
 		if err != nil {
-			logEmbed = common2.UnknownMessageDeleteLogger(c.ChannelID, c.GuildID, c.ID).ToEmbed()
+			logEmbed = common.UnknownMessageDeleteLogger(c.ChannelID, c.GuildID, c.ID).ToEmbed()
 		} else {
-			logEmbed = common2.MessageDeleteLogger(message).ToEmbed()
+			logEmbed = common.MessageDeleteLogger(message).ToEmbed()
 		}
-		common2.AddEmbedToQueue(common2.MessageItem{
+		common.AddEmbedToQueue(common.MessageItem{
 			Embed:   logEmbed,
-			Channel: common2.GetLoggerChannel(),
+			Channel: common.GetLoggerChannel(),
 		})
 	}
 }
@@ -49,10 +50,10 @@ func (m Message) MessageUpdateEvent() func(c *gateway.MessageUpdateEvent) {
 			log.Error().Err(err).Msg("Error getting message from cache")
 			return
 		}
-		logEmbed := common2.MessageUpdateLogger(&c.Message, message.Content).ToEmbed()
-		common2.AddEmbedToQueue(common2.MessageItem{
+		logEmbed := common.MessageUpdateLogger(&c.Message, message.Content).ToEmbed()
+		common.AddEmbedToQueue(common.MessageItem{
 			Embed:   logEmbed,
-			Channel: common2.GetLoggerChannel(),
+			Channel: common.GetLoggerChannel(),
 		})
 	}
 }
@@ -79,10 +80,10 @@ func (m Message) MessageCreateEvent() func(c *gateway.MessageCreateEvent) {
 			case "join":
 				log.Debug().Msg("Join command")
 				member, _ := m.IHandler.GetState().Member(c.GuildID, c.Author.ID)
-				logEmbed := common2.MemberAddLogger(member).ToEmbed()
-				common2.AddEmbedToQueue(common2.MessageItem{
+				logEmbed := common.MemberAddLogger(member).ToEmbed()
+				common.AddEmbedToQueue(common.MessageItem{
 					Embed:   logEmbed,
-					Channel: common2.GetLoggerChannel(),
+					Channel: common.GetLoggerChannel(),
 				})
 			case "leave":
 				log.Debug().Msg("Leave command")
@@ -92,10 +93,18 @@ func (m Message) MessageCreateEvent() func(c *gateway.MessageCreateEvent) {
 					return
 				}
 
-				logEmbed := common2.MemberRemoveLogger(&c.Message.Author, member.RoleIDs).ToEmbed()
-				common2.AddEmbedToQueue(common2.MessageItem{
+				logEmbed := common.MemberRemoveLogger(&c.Message.Author, member.RoleIDs).ToEmbed()
+				common.AddEmbedToQueue(common.MessageItem{
 					Embed:   logEmbed,
-					Channel: common2.GetLoggerChannel(),
+					Channel: common.GetLoggerChannel(),
+				})
+			case "danger":
+				log.Debug().Msg("Danger command")
+				ember := common.DangerMemberLogger(c.Message.Author, common.MemberDangerLevelHigh).ToEmbed()
+				common.AddEmbedToQueue(common.MessageItem{
+					Embed:   ember,
+					Channel: common.GetModChannel(),
+					Content: fmt.Sprintf("<@&%s>", utils.ConfigRoleMod),
 				})
 			}
 			return
@@ -139,7 +148,7 @@ func (m Message) MessageReactionAddEvent() func(c *gateway.MessageReactionAddEve
 		welcomeChan, err := discord.ParseSnowflake(utils.ConfigWelcomeChannelID)
 
 		welcomeEmbed := views.Welcome(c.Member)
-		common2.AddEmbedToQueue(common2.MessageItem{
+		common.AddEmbedToQueue(common.MessageItem{
 			Embed:   welcomeEmbed,
 			Channel: discord.ChannelID(welcomeChan),
 		})

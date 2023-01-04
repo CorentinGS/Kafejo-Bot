@@ -23,6 +23,8 @@ const (
 	LogTypeGuildMemberAdd
 	// LogTypeGuildMemberRemove is a remove member log
 	LogTypeGuildMemberRemove
+	// LogDangerousMemberAdd is a dangerous member log
+	LogDangerousMemberAdd
 )
 
 func (l LogType) String() string {
@@ -39,6 +41,8 @@ func (l LogType) String() string {
 		return "Guild member added"
 	case LogTypeGuildMemberRemove:
 		return "Guild member removed"
+	case LogDangerousMemberAdd:
+		return "Danger Will Robinson 🤖"
 	default:
 		return "Unknown"
 	}
@@ -58,6 +62,8 @@ func (l LogType) Color() int {
 		return 0x00FFFF
 	case LogTypeGuildMemberRemove:
 		return 0xFF00FF
+	case LogDangerousMemberAdd:
+		return 0xFF0000
 	default:
 		return 0x000000
 	}
@@ -156,4 +162,21 @@ func GetLoggerChannel() discord.ChannelID {
 	// Convert string to snowflake
 	channelID, _ := discord.ParseSnowflake(utils.ConfigLogsChannelID)
 	return discord.ChannelID(channelID)
+}
+
+func GetModChannel() discord.ChannelID {
+	channelID, _ := discord.ParseSnowflake(utils.ConfigAdminChannelID)
+	return discord.ChannelID(channelID)
+}
+
+func DangerMemberLogger(member discord.User, danger MemberDangerLevel) Logger {
+	return Logger{
+		Type:   LogDangerousMemberAdd,
+		Author: member,
+		Footer: &discord.EmbedFooter{Text: "Member ID: " + member.ID.String()},
+		Message: fmt.Sprintf("A suspicious member has joined: %s\n\nDanger level: **%s**\nAccount created: %s ago (%s)\n\n",
+			member.Tag(), danger.String(), utils.FormatTimeSince(member.CreatedAt()),
+			member.CreatedAt().Format("2006-01-02 15:04:05"),
+		),
+	}
 }

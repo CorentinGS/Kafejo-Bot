@@ -1,7 +1,8 @@
 package events
 
 import (
-	common2 "github.com/corentings/kafejo-bot/app/common"
+	"fmt"
+	"github.com/corentings/kafejo-bot/app/common"
 	"github.com/corentings/kafejo-bot/interfaces"
 	"github.com/corentings/kafejo-bot/utils"
 	"github.com/diamondburned/arikawa/v3/discord"
@@ -20,11 +21,21 @@ func (m Member) GuildMemberAddEvent() func(c *gateway.GuildMemberAddEvent) {
 			return
 		}
 
-		logEmbed := common2.MemberAddLogger(&c.Member).ToEmbed()
-		common2.AddEmbedToQueue(common2.MessageItem{
+		logEmbed := common.MemberAddLogger(&c.Member).ToEmbed()
+		common.AddEmbedToQueue(common.MessageItem{
 			Embed:   logEmbed,
-			Channel: common2.GetLoggerChannel(),
+			Channel: common.GetLoggerChannel(),
 		})
+
+		flag := common.VerifyMember(&c.Member)
+		log.Debug().Msgf("Member %s is verified: %s", c.Member.User.Username, flag.String())
+		if flag >= common.MemberDangerLevelMedium {
+			common.AddEmbedToQueue(common.MessageItem{
+				Embed:   common.DangerMemberLogger(c.Member.User, flag).ToEmbed(),
+				Channel: common.GetModChannel(),
+				Content: fmt.Sprintf("<@&%s>", utils.ConfigRoleMod),
+			})
+		}
 	}
 }
 
@@ -39,14 +50,14 @@ func (m Member) GuildMemberRemoveEvent() func(c *gateway.GuildMemberRemoveEvent)
 
 		member, err := m.IHandler.GetState().Member(c.GuildID, c.User.ID)
 		if err != nil {
-			logEmbed = common2.MemberRemoveLogger(&c.User, nil).ToEmbed()
+			logEmbed = common.MemberRemoveLogger(&c.User, nil).ToEmbed()
 		} else {
-			logEmbed = common2.MemberRemoveLogger(&c.User, member.RoleIDs).ToEmbed()
+			logEmbed = common.MemberRemoveLogger(&c.User, member.RoleIDs).ToEmbed()
 		}
 
-		common2.AddEmbedToQueue(common2.MessageItem{
+		common.AddEmbedToQueue(common.MessageItem{
 			Embed:   logEmbed,
-			Channel: common2.GetLoggerChannel(),
+			Channel: common.GetLoggerChannel(),
 		})
 	}
 }
