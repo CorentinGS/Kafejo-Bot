@@ -1,7 +1,7 @@
 package events
 
 import (
-	"github.com/corentings/kafejo-bot/app/commands/common"
+	common2 "github.com/corentings/kafejo-bot/app/common"
 	"github.com/corentings/kafejo-bot/interfaces"
 	"github.com/corentings/kafejo-bot/utils"
 	"github.com/diamondburned/arikawa/v3/discord"
@@ -20,10 +20,10 @@ func (m Member) GuildMemberAddEvent() func(c *gateway.GuildMemberAddEvent) {
 			return
 		}
 
-		logEmbed := common.MemberAddLogger(&c.Member).ToEmbed()
-		common.AddEmbedToQueue(common.MessageItem{
+		logEmbed := common2.MemberAddLogger(&c.Member).ToEmbed()
+		common2.AddEmbedToQueue(common2.MessageItem{
 			Embed:   logEmbed,
-			Channel: common.GetLoggerChannel(),
+			Channel: common2.GetLoggerChannel(),
 		})
 	}
 }
@@ -39,14 +39,14 @@ func (m Member) GuildMemberRemoveEvent() func(c *gateway.GuildMemberRemoveEvent)
 
 		member, err := m.IHandler.GetState().Member(c.GuildID, c.User.ID)
 		if err != nil {
-			logEmbed = common.MemberRemoveLogger(&c.User, nil).ToEmbed()
+			logEmbed = common2.MemberRemoveLogger(&c.User, nil).ToEmbed()
 		} else {
-			logEmbed = common.MemberRemoveLogger(&c.User, member.RoleIDs).ToEmbed()
+			logEmbed = common2.MemberRemoveLogger(&c.User, member.RoleIDs).ToEmbed()
 		}
 
-		common.AddEmbedToQueue(common.MessageItem{
+		common2.AddEmbedToQueue(common2.MessageItem{
 			Embed:   logEmbed,
-			Channel: common.GetLoggerChannel(),
+			Channel: common2.GetLoggerChannel(),
 		})
 	}
 }

@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"github.com/corentings/kafejo-bot/app/commands"
-	"github.com/corentings/kafejo-bot/app/commands/common"
+	"github.com/corentings/kafejo-bot/app/common"
 	"github.com/corentings/kafejo-bot/app/events"
 	"github.com/corentings/kafejo-bot/data/infrastructures"
 	"github.com/corentings/kafejo-bot/models"
