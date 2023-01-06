@@ -31,7 +31,7 @@ func SenderWorker(embeds <-chan MessageItem, wg *sync.WaitGroup) {
 		embed := <-embeds
 		err := SendLogEmbed(embed)
 		if err != nil {
-			log.Error().Err(err).Msg("Error sending log embed")
+			log.Error().Err(err).Msg("Error sending embed")
 		}
 	}
 }
