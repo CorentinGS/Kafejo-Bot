@@ -5,6 +5,7 @@ import (
 	"github.com/corentings/kafejo-bot/app/common"
 	"github.com/corentings/kafejo-bot/interfaces"
 	"github.com/corentings/kafejo-bot/utils"
+	"github.com/corentings/kafejo-bot/views"
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/gateway"
 	"github.com/rs/zerolog/log"
@@ -36,6 +37,15 @@ func (m Member) GuildMemberAddEvent() func(c *gateway.GuildMemberAddEvent) {
 				Content: fmt.Sprintf("<@&%s>", utils.ConfigRoleMod),
 			})
 		}
+
+		welcomeChan, _ := discord.ParseSnowflake(utils.ConfigWelcomeChannelID)
+
+		welcomeEmbed := views.Welcome(&c.Member)
+		common.AddEmbedToQueue(common.MessageItem{
+			Embed:   welcomeEmbed,
+			Channel: discord.ChannelID(welcomeChan),
+		})
+
 	}
 }
 
