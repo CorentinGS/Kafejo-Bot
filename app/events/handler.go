@@ -26,4 +26,8 @@ func RegisterHandlers(handler *cmdHandler.HandlerModel) {
 	handler.AddSyncHandler(member.GuildMemberRemoveEvent())
 
 	handler.AddSyncHandler(member.GuildMemberUpdateEvent())
+
+	handler.AddSyncHandler(member.GuildMemberBanEvent())
+
+	handler.AddSyncHandler(member.GuildMemberUnbanEvent())
 }
