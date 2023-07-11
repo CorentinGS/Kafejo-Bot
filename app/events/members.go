@@ -15,6 +15,36 @@ type Member struct {
 	interfaces.IHandler
 }
 
+func (m Member) GuildMemberBanEvent() func(c *gateway.GuildBanAddEvent) {
+	log.Debug().Msgf("Registering GuildMemberBanEvent")
+	return func(c *gateway.GuildBanAddEvent) {
+		if c.GuildID.String() != utils.ConfigGuildID {
+			return
+		}
+
+		logEmbed := common.MemberBanLogger(&c.User).ToEmbed()
+		common.AddEmbedToQueue(common.MessageItem{
+			Embed:   logEmbed,
+			Channel: common.GetLoggerChannel(),
+		})
+	}
+}
+
+func (m Member) GuildMemberUnbanEvent() func(c *gateway.GuildBanRemoveEvent) {
+	log.Debug().Msgf("Registering GuildMemberUnbanEvent")
+	return func(c *gateway.GuildBanRemoveEvent) {
+		if c.GuildID.String() != utils.ConfigGuildID {
+			return
+		}
+
+		logEmbed := common.MemberUnbanLogger(&c.User).ToEmbed()
+		common.AddEmbedToQueue(common.MessageItem{
+			Embed:   logEmbed,
+			Channel: common.GetLoggerChannel(),
+		})
+	}
+}
+
 func (m Member) GuildMemberAddEvent() func(c *gateway.GuildMemberAddEvent) {
 	log.Debug().Msgf("Registering GuildMemberAddEvent")
 	return func(c *gateway.GuildMemberAddEvent) {

@@ -29,56 +29,44 @@ const (
 	LogTypeMemberRoleAdd
 	// LogTypeMemberRoleRemove is a member role remove log
 	LogTypeMemberRoleRemove
+	// LogTypeGuildMemberBan is a member ban log
+	LogTypeGuildMemberBan
+	// LogTypeGuildMemberUnban is a member unban log
+	LogTypeGuildMemberUnban
 )
 
 func (l LogType) String() string {
-	switch l {
-	case LogTypeMessageDelete:
-		return "Message deleted"
-	case LogTypeMessageUpdate:
-		return "Message updated"
-	case LogTypeMessageCreate:
-		return "Message created"
-	case LogTypeMessageReactionAdd:
-		return "Message reaction added"
-	case LogTypeGuildMemberAdd:
-		return "Guild member added"
-	case LogTypeGuildMemberRemove:
-		return "Guild member removed"
-	case LogDangerousMemberAdd:
-		return "Danger Will Robinson 🤖"
-	case LogTypeMemberRoleAdd:
-		return "Member role added"
-	case LogTypeMemberRoleRemove:
-		return "Member role removed"
-	default:
-		return "Unknown"
-	}
+	return [...]string{
+		"Message deleted",
+		"Message updated",
+		"Message created",
+		"Message reaction added",
+		"Guild member added",
+		"Guild member removed",
+		"Danger Will Robinson 🤖",
+		"Member role added",
+		"Member role removed",
+		"Member banned",
+		"Member unbanned",
+	}[l]
 }
 
 func (l LogType) Color() int {
-	switch l {
-	case LogTypeMessageDelete:
-		return 0xFF0000
-	case LogTypeMessageUpdate:
-		return 0xFFFF00
-	case LogTypeMessageCreate:
-		return 0x00FF00
-	case LogTypeMessageReactionAdd:
-		return 0x0000FF
-	case LogTypeGuildMemberAdd:
-		return 0x00FFFF
-	case LogTypeGuildMemberRemove:
-		return 0xFF00FF
-	case LogDangerousMemberAdd:
-		return 0xFF0000
-	case LogTypeMemberRoleAdd:
-		return 0x00FF00
-	case LogTypeMemberRoleRemove:
-		return 0xFF0000
-	default:
-		return 0x000000
-	}
+
+	return [...]int{
+		0xFF0000, // red (message delete)
+		0xFFFF00, // yellow (message update)
+		0x00FF00, // green (message create)
+		0x0000FF, // blue (message reaction add)
+		0x00FFFF, // cyan (guild member add)
+		0xFF00FF, // magenta (guild member remove)
+		0xFF0000, // red (dangerous member add)
+		0x00FF00, // green (member role add)
+		0xFF0000, // red 	(member role remove)
+		0xFF0000, // red (member ban)
+		0x00FF00, // green (member unban)
+	}[l]
+
 }
 
 // Logger is a logger
@@ -140,6 +128,22 @@ func MemberAddLogger(member *discord.Member) Logger {
 			member.User.CreatedAt().Format("2006-01-02 15:04:05")),
 		Footer: &discord.EmbedFooter{Text: "Member ID: " + member.User.ID.String()},
 		Author: member.User,
+	}
+}
+
+func MemberBanLogger(user *discord.User) Logger {
+	return Logger{
+		Type:    LogTypeGuildMemberBan,
+		Message: fmt.Sprintf("Member: %s", user.Tag()),
+		Footer:  &discord.EmbedFooter{Text: "Member ID: " + user.ID.String()},
+	}
+}
+
+func MemberUnbanLogger(user *discord.User) Logger {
+	return Logger{
+		Type:    LogTypeGuildMemberUnban,
+		Message: fmt.Sprintf("Member: %s", user.Tag()),
+		Footer:  &discord.EmbedFooter{Text: "Member ID: " + user.ID.String()},
 	}
 }
 
