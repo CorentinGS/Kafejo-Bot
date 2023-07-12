@@ -1,10 +1,10 @@
 package common
 
 import (
+	"github.com/corentings/kafejo-bot/utils"
 	"strings"
 	"time"
 
-	"github.com/corentings/kafejo-bot/utils"
 	"github.com/diamondburned/arikawa/v3/discord"
 )
 
@@ -46,6 +46,21 @@ func VerifyMember(member *discord.Member) MemberDangerLevel {
 	// if the member hasn't a custom avatar
 	if utils.IsDefaultAvatar(member.User.AvatarURL()) {
 		flag++
+	}
+
+	// if the member has MFA enabled
+	if member.User.MFA {
+		flag--
+	}
+
+	// if the member has no email verified
+	if member.User.EmailVerified == false {
+		flag = MemberDangerLevelHigh
+	}
+
+	// if the member is flagged as a spammer
+	if member.User.PublicFlags&discord.LikelySpammer != 0 {
+		flag = MemberDangerLevelHigh
 	}
 
 	cleanUsername := strings.ToLower(member.User.Username)
