@@ -28,26 +28,26 @@ func (k *Command) AddKarmaCommand() cmdroute.CommandHandlerFunc {
 		options := data.Options
 
 		if options[0].String() == data.Event.Member.User.ID.String() {
-			log.Debug().Msgf("User %v tried to add karma to himself", data.Event.Member.User.ID.String())
+			log.Debug().Msgf("User %v tried to add incrementKarma to himself", data.Event.Member.User.ID.String())
 			return &api.InteractionResponseData{
 				Embeds: views.NewEmbeds(views.Forbidden()),
 				Flags:  discord.EphemeralMessage,
 			}
 		}
 
-		karma, err := k.IncrementKarma(ctx, options[0].String(), data.Event.GuildID.String())
+		incrementKarma, err := k.IncrementKarma(ctx, options[0].String(), data.Event.GuildID.String())
 		if err != nil {
-			log.Warn().Msgf("Error incrementing karma: %v", err)
+			log.Warn().Msgf("Error incrementing incrementKarma: %v", err)
 			return &api.InteractionResponseData{
 				Embeds: views.NewEmbeds(
-					views.Error("Error incrementing karma", err.Error())),
+					views.Error("Error incrementing incrementKarma", err.Error())),
 				Flags: discord.EphemeralMessage,
 			}
 		}
 
 		return &api.InteractionResponseData{
 			Embeds: views.NewEmbeds(
-				views.Success("Karma added", karma.GetKarmaAsString())),
+				views.Success("Karma added", incrementKarma.GetKarmaAsString())),
 			Flags: discord.EphemeralMessage,
 		}
 	}
@@ -66,20 +66,20 @@ func (k *Command) ShowKarmaCommand() cmdroute.CommandHandlerFunc {
 			userID = options[0].String()
 		}
 
-		karma, err := k.GetKarma(ctx, userID, data.Event.GuildID.String())
+		getKarma, err := k.GetKarma(ctx, userID, data.Event.GuildID.String())
 		if err != nil {
-			karma, err = k.CreateKarma(ctx, domain.Karma{UserID: userID, GuildID: data.Event.GuildID.String(), Value: 0})
+			getKarma, err = k.CreateKarma(ctx, domain.Karma{UserID: userID, GuildID: data.Event.GuildID.String(), Value: 0})
 			if err != nil {
-				log.Warn().Msgf("Error creating karma: %v", err)
+				log.Warn().Msgf("Error creating getKarma: %v", err)
 				return &api.InteractionResponseData{
 					Embeds: views.NewEmbeds(
-						views.Error("Error creating karma", err.Error())),
+						views.Error("Error creating getKarma", err.Error())),
 					Flags: discord.EphemeralMessage,
 				}
 			}
 		}
 
-		return &api.InteractionResponseData{Content: option.NewNullableString(karma.GetKarmaAsString()), Flags: discord.EphemeralMessage}
+		return &api.InteractionResponseData{Content: option.NewNullableString(getKarma.GetKarmaAsString()), Flags: discord.EphemeralMessage}
 	}
 }
 

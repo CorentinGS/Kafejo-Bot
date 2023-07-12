@@ -55,6 +55,7 @@ func VerifyMember(member *discord.Member) MemberDangerLevel {
 	}
 
 	// if the username has a link
+	//goland:noinspection HttpUrlsUsage
 	if strings.Contains(cleanUsername, "http://") || strings.Contains(cleanUsername, "https://") {
 		flag = MemberDangerLevelHigh
 	}
