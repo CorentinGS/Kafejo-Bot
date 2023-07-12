@@ -2,19 +2,19 @@ package commands
 
 import (
 	"github.com/corentings/kafejo-bot/data/cmdHandler"
-	"github.com/corentings/kafejo-bot/services"
+	"github.com/corentings/kafejo-bot/internal"
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/api/cmdroute"
 	"github.com/diamondburned/arikawa/v3/discord"
 )
 
 var KarmaCommand = api.CreateCommandData{
-	Name:        "karma",
+	Name:        "karmaCmd",
 	Description: "Karma main command",
 	Options: []discord.CommandOption{
 		&discord.SubcommandOption{
 			OptionName:  "add",
-			Description: "add karma",
+			Description: "add karmaCmd",
 			Required:    false,
 			Options: []discord.CommandOptionValue{
 				&discord.UserOption{
@@ -26,7 +26,7 @@ var KarmaCommand = api.CreateCommandData{
 		},
 		&discord.SubcommandOption{
 			OptionName:  "show",
-			Description: "show karma",
+			Description: "show karmaCmd",
 			Required:    false,
 			Options: []discord.CommandOptionValue{
 				&discord.UserOption{
@@ -40,9 +40,9 @@ var KarmaCommand = api.CreateCommandData{
 }
 
 func registerKarma(h *cmdHandler.HandlerModel) {
-	karmaCommand := services.GetServiceContainer().InjectKarmaCommandHandler()
+	karmaCommand := internal.GetServiceContainer().GetKarma()
 
-	h.Router.Sub("karma", func(r *cmdroute.Router) {
+	h.Router.Sub("karmaCmd", func(r *cmdroute.Router) {
 		r.AddFunc("add", karmaCommand.AddKarmaCommand())
 		r.AddFunc("show", karmaCommand.ShowKarmaCommand())
 	})
