@@ -53,6 +53,10 @@ func VerifyMember(member *discord.Member) MemberDangerLevel {
 		flag--
 	}
 
+	if member.User.Nitro > discord.NoUserNitro {
+		flag--
+	}
+
 	// if the member has no email verified
 	if member.User.EmailVerified == false {
 		flag = MemberDangerLevelHigh
