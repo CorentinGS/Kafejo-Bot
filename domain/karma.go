@@ -1,8 +1,9 @@
 package domain
 
 import (
-	"gorm.io/gorm"
 	"strconv"
+
+	"gorm.io/gorm"
 )
 
 type Karma struct {

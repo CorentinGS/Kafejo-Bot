@@ -1,7 +1,9 @@
-package karmaCmd
+package karmacommand
 
 import (
 	"context"
+
+	"github.com/corentings/kafejo-bot/app/handler"
 	"github.com/corentings/kafejo-bot/domain"
 	"github.com/corentings/kafejo-bot/internal/karma"
 	"github.com/corentings/kafejo-bot/views"
@@ -12,12 +14,13 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func NewCommand(karmaService karma.IUseCase) Command {
-	return Command{karmaService}
+func NewCommand(karmaService karma.IUseCase, handler handler.IHandler) Command {
+	return Command{karmaService, handler}
 }
 
 type Command struct {
 	karma.IUseCase
+	handler.IHandler
 }
 
 func (k *Command) AddKarmaCommand() cmdroute.CommandHandlerFunc {
@@ -25,25 +28,28 @@ func (k *Command) AddKarmaCommand() cmdroute.CommandHandlerFunc {
 		options := data.Options
 
 		if options[0].String() == data.Event.Member.User.ID.String() {
-			log.Debug().Msgf("User %v tried to add karmaCmd to himself", data.Event.Member.User.ID.String())
+			log.Debug().Msgf("User %v tried to add karma to himself", data.Event.Member.User.ID.String())
 			return &api.InteractionResponseData{
 				Embeds: views.NewEmbeds(views.Forbidden()),
-				Flags:  discord.EphemeralMessage}
+				Flags:  discord.EphemeralMessage,
+			}
 		}
 
 		karma, err := k.IncrementKarma(ctx, options[0].String(), data.Event.GuildID.String())
 		if err != nil {
-			log.Warn().Msgf("Error incrementing karmaCmd: %v", err)
+			log.Warn().Msgf("Error incrementing karma: %v", err)
 			return &api.InteractionResponseData{
 				Embeds: views.NewEmbeds(
-					views.Error("Error incrementing karmaCmd", err.Error())),
-				Flags: discord.EphemeralMessage}
+					views.Error("Error incrementing karma", err.Error())),
+				Flags: discord.EphemeralMessage,
+			}
 		}
 
 		return &api.InteractionResponseData{
 			Embeds: views.NewEmbeds(
 				views.Success("Karma added", karma.GetKarmaAsString())),
-			Flags: discord.EphemeralMessage}
+			Flags: discord.EphemeralMessage,
+		}
 	}
 }
 
@@ -64,10 +70,10 @@ func (k *Command) ShowKarmaCommand() cmdroute.CommandHandlerFunc {
 		if err != nil {
 			karma, err = k.CreateKarma(ctx, domain.Karma{UserID: userID, GuildID: data.Event.GuildID.String(), Value: 0})
 			if err != nil {
-				log.Warn().Msgf("Error creating karmaCmd: %v", err)
+				log.Warn().Msgf("Error creating karma: %v", err)
 				return &api.InteractionResponseData{
 					Embeds: views.NewEmbeds(
-						views.Error("Error creating karmaCmd", err.Error())),
+						views.Error("Error creating karma", err.Error())),
 					Flags: discord.EphemeralMessage,
 				}
 			}

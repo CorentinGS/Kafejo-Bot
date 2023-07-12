@@ -2,6 +2,7 @@ package karma
 
 import (
 	"context"
+
 	"github.com/corentings/kafejo-bot/domain"
 	"github.com/corentings/kafejo-bot/utils"
 )

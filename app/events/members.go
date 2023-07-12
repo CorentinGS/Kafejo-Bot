@@ -2,8 +2,9 @@ package events
 
 import (
 	"fmt"
+
 	"github.com/corentings/kafejo-bot/app/common"
-	"github.com/corentings/kafejo-bot/interfaces"
+	"github.com/corentings/kafejo-bot/app/handler"
 	"github.com/corentings/kafejo-bot/utils"
 	"github.com/corentings/kafejo-bot/views"
 	"github.com/diamondburned/arikawa/v3/discord"
@@ -12,7 +13,7 @@ import (
 )
 
 type Member struct {
-	interfaces.IHandler
+	handler.IHandler
 }
 
 func (m Member) GuildMemberBanEvent() func(c *gateway.GuildBanAddEvent) {
@@ -75,7 +76,6 @@ func (m Member) GuildMemberAddEvent() func(c *gateway.GuildMemberAddEvent) {
 			Embed:   welcomeEmbed,
 			Channel: discord.ChannelID(welcomeChan),
 		})
-
 	}
 }
 

@@ -2,54 +2,85 @@ package utils
 
 import (
 	"fmt"
-	"github.com/corentings/kafejo-bot/data/cmdHandler"
-	"github.com/diamondburned/arikawa/v3/discord"
-	"github.com/diamondburned/arikawa/v3/state"
 	"strings"
 	"time"
+
+	"github.com/corentings/kafejo-bot/app/handler"
+	"github.com/diamondburned/arikawa/v3/discord"
+	"github.com/diamondburned/arikawa/v3/state"
 )
 
 const (
-	day  = time.Minute * 60 * 24
-	year = 365 * day
+	day    = time.Minute * 60 * 24
+	minute = time.Minute
+	hour   = time.Hour
+	year   = 365 * day
 )
 
 func GetSession() *state.State {
-	return cmdHandler.GetHandler().GetState()
-}
-
-func TimeSince(old time.Time) time.Duration {
-	now := time.Now()
-	diff := now.Sub(old)
-	return diff
+	return handler.GetHandler().GetState()
 }
 
 func FormatTimeSince(old time.Time) string {
-	d := TimeSince(old)
-	if d < day {
-		return fmt.Sprintf("%d hours ago", int(d.Hours()))
+	duration := time.Since(old)
+
+	if duration < time.Second {
+		return "just now"
+	}
+
+	if duration < minute {
+		return fmt.Sprintf("%d seconds ago", int(duration.Seconds()))
+	}
+
+	if duration < hour {
+		return fmt.Sprintf("%d minutes ago", int(duration.Minutes()))
+	}
+
+	if duration < day {
+		return fmt.Sprintf("%d hours ago", int(duration.Hours()))
 	}
 
 	var b strings.Builder
-	if d >= year {
-		years := d / year
+
+	if duration >= year {
+		years := duration / year
 		_, err := fmt.Fprintf(&b, "%dy ", years)
 		if err != nil {
 			return ""
 		}
-		d -= years * year
+		duration -= years * year
 	}
 
-	months := d / (30 * day)
-	d -= months * (30 * day)
+	months := duration / (30 * day)
+	duration -= months * (30 * day)
 	_, err := fmt.Fprintf(&b, "%dm ", months)
 	if err != nil {
 		return ""
 	}
 
-	days := d / day
-	d -= days * day
-	_, err = fmt.Fprintf(&b, "%dd", days)
+	days := duration / day
+	duration -= days * day
+	_, err = fmt.Fprintf(&b, "%dd ", days)
+	if err != nil {
+		return ""
+	}
+
+	hours := duration / time.Hour
+	duration -= hours * time.Hour
+	_, err = fmt.Fprintf(&b, "%dh ", hours)
+	if err != nil {
+		return ""
+	}
+
+	minutes := duration / time.Minute
+	duration -= minutes * time.Minute
+	_, err = fmt.Fprintf(&b, "%dm ", minutes)
+	if err != nil {
+		return ""
+	}
+
+	seconds := duration / time.Second
+	_, err = fmt.Fprintf(&b, "%ds", seconds)
 	if err != nil {
 		return ""
 	}

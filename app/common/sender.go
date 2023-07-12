@@ -1,10 +1,11 @@
 package common
 
 import (
+	"sync"
+
 	"github.com/corentings/kafejo-bot/utils"
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/rs/zerolog/log"
-	"sync"
 )
 
 type MessageItem struct {
@@ -13,9 +14,7 @@ type MessageItem struct {
 	Content string
 }
 
-var (
-	embedsChan = make(chan MessageItem, 100)
-)
+var embedsChan = make(chan MessageItem, 100)
 
 func SendLogEmbed(embed MessageItem) error {
 	session := utils.GetSession()

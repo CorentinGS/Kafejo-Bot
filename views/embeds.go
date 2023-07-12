@@ -2,6 +2,7 @@ package views
 
 import (
 	"fmt"
+
 	"github.com/diamondburned/arikawa/v3/discord"
 )
 

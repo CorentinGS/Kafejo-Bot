@@ -1,10 +1,11 @@
 package common
 
 import (
-	"github.com/corentings/kafejo-bot/utils"
-	"github.com/diamondburned/arikawa/v3/discord"
 	"strings"
 	"time"
+
+	"github.com/corentings/kafejo-bot/utils"
+	"github.com/diamondburned/arikawa/v3/discord"
 )
 
 type MemberDangerLevel int64
@@ -39,12 +40,12 @@ func VerifyMember(member *discord.Member) MemberDangerLevel {
 	if now.Sub(member.User.CreatedAt()) < time.Hour*24*7 {
 		flag += 2
 	} else if now.Sub(member.User.CreatedAt()) < time.Hour*24*30 {
-		flag += 1
+		flag++
 	}
 
 	// if the member hasn't a custom avatar
 	if utils.IsDefaultAvatar(member.User.AvatarURL()) {
-		flag += 1
+		flag++
 	}
 
 	cleanUsername := strings.ToLower(member.User.Username)

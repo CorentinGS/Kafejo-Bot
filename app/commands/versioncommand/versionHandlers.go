@@ -1,17 +1,27 @@
-package version
+package versioncommand
 
 import (
-	"github.com/corentings/kafejo-bot/interfaces"
+	"github.com/corentings/kafejo-bot/app/handler"
 	"github.com/corentings/kafejo-bot/utils"
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/discord"
 )
 
-type Command struct {
-	interfaces.IHandler
+func NewCommand(handler handler.IHandler) Command {
+	return Command{
+		handler,
+	}
 }
 
-func (c Command) CmdVersion() *api.InteractionResponseData {
+type Command struct {
+	handler.IHandler
+}
+
+func (c Command) GetCommandName() string {
+	return CommandName
+}
+
+func (c Command) RespondVersion() *api.InteractionResponseData {
 	me, _ := c.GetState().Me()
 	return &api.InteractionResponseData{Embeds: &[]discord.Embed{
 		{

@@ -2,8 +2,9 @@ package events
 
 import (
 	"fmt"
+
 	"github.com/corentings/kafejo-bot/app/common"
-	"github.com/corentings/kafejo-bot/interfaces"
+	"github.com/corentings/kafejo-bot/app/handler"
 	"github.com/corentings/kafejo-bot/utils"
 	"github.com/corentings/kafejo-bot/views"
 	"github.com/diamondburned/arikawa/v3/api"
@@ -13,7 +14,7 @@ import (
 )
 
 type Message struct {
-	interfaces.IHandler
+	handler.IHandler
 }
 
 func (m Message) MessageDeleteEvent() func(c *gateway.MessageDeleteEvent) {
@@ -129,6 +130,10 @@ func (m Message) MessageReactionAddEvent() func(c *gateway.MessageReactionAddEve
 
 		// Convert roleID to snowflake
 		roleID, err := discord.ParseSnowflake(utils.ConfigMainRole)
+		if err != nil {
+			log.Error().Err(err).Msg("Error parsing roleID")
+			return
+		}
 
 		err = m.GetState().AddRole(c.GuildID, c.UserID, discord.RoleID(roleID), api.AddRoleData{AuditLogReason: "User reacted to welcome message"})
 		if err != nil {
@@ -146,6 +151,10 @@ func (m Message) MessageReactionAddEvent() func(c *gateway.MessageReactionAddEve
 		}
 
 		welcomeChan, err := discord.ParseSnowflake(utils.ConfigWelcomeChannelID)
+		if err != nil {
+			log.Error().Err(err).Msg("Error parsing welcome channel ID")
+			return
+		}
 
 		welcomeEmbed := views.Welcome(c.Member)
 		common.AddEmbedToQueue(common.MessageItem{
