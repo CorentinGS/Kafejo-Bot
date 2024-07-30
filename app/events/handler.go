@@ -1,10 +1,10 @@
 package events
 
 import (
-	"github.com/corentings/kafejo-bot/data/cmdHandler"
+	"github.com/corentings/kafejo-bot/app/handler"
 )
 
-func RegisterHandlers(handler *cmdHandler.HandlerModel) {
+func RegisterHandlers(handler *handler.CommandHandler) {
 	message := Message{
 		IHandler: handler,
 	}

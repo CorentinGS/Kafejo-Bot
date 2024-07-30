@@ -3,6 +3,7 @@ module github.com/corentings/kafejo-bot
 go 1.19
 
 require (
+	github.com/google/wire v0.5.0
 	github.com/diamondburned/arikawa/v3 v3.3.6
 	github.com/joho/godotenv v1.5.1
 	github.com/pkg/errors v0.9.1

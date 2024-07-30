@@ -2,38 +2,41 @@ package commands
 
 import (
 	"context"
-	"github.com/corentings/kafejo-bot/data/cmdHandler"
-	"github.com/corentings/kafejo-bot/interfaces"
+	"time"
+
+	"github.com/corentings/kafejo-bot/app/commands/karmacommand"
+	"github.com/corentings/kafejo-bot/app/commands/versioncommand"
+	"github.com/corentings/kafejo-bot/app/handler"
 	"github.com/corentings/kafejo-bot/utils"
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/api/cmdroute"
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/state"
 	"github.com/diamondburned/arikawa/v3/utils/json/option"
-	"time"
 )
 
-var (
-	commands = []api.CreateCommandData{{Name: "ping", Description: "Ping!"},
-		{Name: "get-version", Description: "Returns the version of the bot"}, {Name: "coffee", Description: "Get a cup of coffee"},
-		KarmaCommand}
-)
+var commands = []api.CreateCommandData{
+	{Name: "ping", Description: "Ping!"},
+	{Name: "coffee", Description: "Get a cup of coffee"},
+	versioncommand.GetCommandData(),
+	karmacommand.GetCommandData(),
+}
 
 func GetCommands() []api.CreateCommandData {
 	return commands
 }
 
-func NewHandler(s *state.State) *cmdHandler.HandlerModel {
-	h := cmdHandler.CreateHandler(s)
+func NewHandler(s *state.State) *handler.CommandHandler {
+	h := handler.CreateHandler(s)
 	h.AddFunc("ping", pingCommandHandler())
-	h.AddFunc("get-version", cmdVersion())
 	h.AddFunc("coffee", CoffeeCommandHandler())
+	registerVersion(h)
 	registerKarma(h)
 	return h
 }
 
 type Command struct {
-	interfaces.IHandler
+	handler.IHandler
 }
 
 func pingCommandHandler() cmdroute.CommandHandlerFunc {

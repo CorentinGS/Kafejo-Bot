@@ -2,9 +2,10 @@ package common
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/corentings/kafejo-bot/utils"
 	"github.com/diamondburned/arikawa/v3/discord"
-	"strings"
 )
 
 // LogType is the type of the log
@@ -52,7 +53,6 @@ func (l LogType) String() string {
 }
 
 func (l LogType) Color() int {
-
 	return [...]int{
 		0xFF0000, // red (message delete)
 		0xFFFF00, // yellow (message update)
@@ -66,7 +66,6 @@ func (l LogType) Color() int {
 		0xFF0000, // red (member ban)
 		0x00FF00, // green (member unban)
 	}[l]
-
 }
 
 // Logger is a logger
@@ -101,7 +100,7 @@ func MessageDeleteLogger(message *discord.Message) Logger {
 	}
 }
 
-func UnknownMessageDeleteLogger(channelID discord.ChannelID, guildID discord.GuildID, messageID discord.MessageID) Logger {
+func UnknownMessageDeleteLogger(channelID discord.ChannelID, _ discord.GuildID, messageID discord.MessageID) Logger {
 	return Logger{
 		Type:    LogTypeMessageDelete,
 		Author:  discord.User{},
@@ -167,9 +166,9 @@ func MemberRemoveLogger(user *discord.User, roles []discord.RoleID) Logger {
 }
 
 func CreateLoggerEmbeds(loggers []Logger) *[]discord.Embed {
-	var embeds []discord.Embed
-	for _, logger := range loggers {
-		embeds = append(embeds, createLoggerEmbed(logger))
+	embeds := make([]discord.Embed, len(loggers))
+	for idx, logger := range loggers {
+		embeds[idx] = createLoggerEmbed(logger)
 	}
 	return &embeds
 }

@@ -2,12 +2,12 @@ package infrastructures
 
 import (
 	"fmt"
-	"github.com/corentings/kafejo-bot/utils"
 	"log"
 	"os"
 	"strconv"
 	"time"
 
+	"github.com/corentings/kafejo-bot/utils"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -21,10 +21,8 @@ type DBParams struct {
 	DBName   string
 }
 
-var (
-	// DBConn is the database connection
-	DBConn *gorm.DB
-)
+// DBConn is the database connection
+var DBConn *gorm.DB
 
 // GetDBConn returns the database connection object
 func GetDBConn() *gorm.DB {

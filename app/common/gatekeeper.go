@@ -2,9 +2,10 @@ package common
 
 import (
 	"github.com/corentings/kafejo-bot/utils"
-	"github.com/diamondburned/arikawa/v3/discord"
 	"strings"
 	"time"
+
+	"github.com/diamondburned/arikawa/v3/discord"
 )
 
 type MemberDangerLevel int64
@@ -39,12 +40,31 @@ func VerifyMember(member *discord.Member) MemberDangerLevel {
 	if now.Sub(member.User.CreatedAt()) < time.Hour*24*7 {
 		flag += 2
 	} else if now.Sub(member.User.CreatedAt()) < time.Hour*24*30 {
-		flag += 1
+		flag++
 	}
 
 	// if the member hasn't a custom avatar
 	if utils.IsDefaultAvatar(member.User.AvatarURL()) {
-		flag += 1
+		flag++
+	}
+
+	// if the member has MFA enabled
+	if member.User.MFA {
+		flag--
+	}
+
+	if member.User.Nitro > discord.NoUserNitro {
+		flag--
+	}
+
+	// if the member has no email verified
+	if member.User.EmailVerified == false {
+		flag = MemberDangerLevelHigh
+	}
+
+	// if the member is flagged as a spammer
+	if member.User.PublicFlags&discord.LikelySpammer != 0 {
+		flag = MemberDangerLevelHigh
 	}
 
 	cleanUsername := strings.ToLower(member.User.Username)
@@ -54,6 +74,7 @@ func VerifyMember(member *discord.Member) MemberDangerLevel {
 	}
 
 	// if the username has a link
+	//goland:noinspection HttpUrlsUsage
 	if strings.Contains(cleanUsername, "http://") || strings.Contains(cleanUsername, "https://") {
 		flag = MemberDangerLevelHigh
 	}

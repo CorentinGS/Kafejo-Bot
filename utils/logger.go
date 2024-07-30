@@ -10,7 +10,8 @@ import (
 )
 
 func prettyLogger() zerolog.ConsoleWriter {
-	return zerolog.ConsoleWriter{Out: os.Stderr,
+	return zerolog.ConsoleWriter{
+		Out:        os.Stderr,
 		TimeFormat: zerolog.TimeFormatUnix,
 		FormatLevel: func(i interface{}) string {
 			return strings.ToUpper(fmt.Sprintf("[%s]", i))

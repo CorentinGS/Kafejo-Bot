@@ -2,18 +2,19 @@ package main
 
 import (
 	"context"
+	"os"
+
 	"github.com/corentings/kafejo-bot/app/commands"
 	"github.com/corentings/kafejo-bot/app/common"
 	"github.com/corentings/kafejo-bot/app/events"
-	"github.com/corentings/kafejo-bot/data/infrastructures"
-	"github.com/corentings/kafejo-bot/models"
+	"github.com/corentings/kafejo-bot/domain"
+	"github.com/corentings/kafejo-bot/infrastructures"
 	"github.com/corentings/kafejo-bot/utils"
 	"github.com/diamondburned/arikawa/v3/api/cmdroute"
 	"github.com/diamondburned/arikawa/v3/gateway"
 	"github.com/diamondburned/arikawa/v3/state"
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog/log"
-	"os"
 )
 
 func init() { loadVar() }
@@ -43,13 +44,13 @@ func main() {
 
 	// Models to migrate
 	var migrates []interface{}
-	migrates = append(migrates, models.Karma{})
+	migrates = append(migrates, domain.Karma{})
 
-	// AutoMigrate models
+	// AutoMigrate domain
 	for i := 0; i < len(migrates); i++ {
 		err = infrastructures.GetDBConn().AutoMigrate(&migrates[i])
 		if err != nil {
-			log.Panic().Err(err).Msg("Can't auto migrate models")
+			log.Panic().Err(err).Msg("Can't auto migrate domain")
 		}
 	}
 
