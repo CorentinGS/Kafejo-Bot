@@ -1,4 +1,4 @@
-FROM golang:1.19-alpine as builder
+FROM golang:1.22-alpine as builder
 
 LABEL stage=gobuilder
 
@@ -18,7 +18,7 @@ RUN go get -d -v
 RUN go build -ldflags="-s -w" -o /app/kafejobot .
 RUN upx /app/kafejobot
 
-FROM alpine:3.17
+FROM alpine:3.20
 
 RUN apk update && apk add ca-certificates
 COPY --from=builder /usr/share/zoneinfo/Europe/Paris /usr/share/zoneinfo/Europe/Paris
