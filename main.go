@@ -7,8 +7,6 @@ import (
 	"github.com/corentings/kafejo-bot/app/commands"
 	"github.com/corentings/kafejo-bot/app/common"
 	"github.com/corentings/kafejo-bot/app/events"
-	"github.com/corentings/kafejo-bot/domain"
-	"github.com/corentings/kafejo-bot/infrastructures"
 	"github.com/corentings/kafejo-bot/utils"
 	"github.com/diamondburned/arikawa/v3/api/cmdroute"
 	"github.com/diamondburned/arikawa/v3/gateway"
@@ -36,24 +34,6 @@ func main() {
 		log.Fatal().Msg("No token provided")
 	}
 
-	dbConfig := infrastructures.DBConfig()
-	err := dbConfig.Connect()
-	if err != nil {
-		log.Panic().Err(err).Msg("Error connecting to database")
-	}
-
-	// Models to migrate
-	var migrates []interface{}
-	migrates = append(migrates, domain.Karma{})
-
-	// AutoMigrate domain
-	for i := 0; i < len(migrates); i++ {
-		err = infrastructures.GetDBConn().AutoMigrate(&migrates[i])
-		if err != nil {
-			log.Panic().Err(err).Msg("Can't auto migrate domain")
-		}
-	}
-
 	go common.CreateSenderWorker()
 
 	h := commands.NewHandler(state.New("Bot " + token))
@@ -67,11 +47,11 @@ func main() {
 		log.Info().Msgf("connected to the gateway as %s", me.Tag())
 	})
 
-	if err = cmdroute.OverwriteCommands(h.S, commands.GetCommands()); err != nil {
+	if err := cmdroute.OverwriteCommands(h.S, commands.GetCommands()); err != nil {
 		log.Fatal().Msgf("cannot update commands: %s", err)
 	}
 
-	if err = h.S.Connect(context.TODO()); err != nil {
+	if err := h.S.Connect(context.TODO()); err != nil {
 		log.Fatal().Msgf("cannot connect: %s", err)
 	}
 

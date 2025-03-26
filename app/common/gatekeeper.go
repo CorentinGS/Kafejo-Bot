@@ -1,9 +1,10 @@
 package common
 
 import (
-	"github.com/corentings/kafejo-bot/utils"
 	"strings"
 	"time"
+
+	"github.com/corentings/kafejo-bot/utils"
 
 	"github.com/diamondburned/arikawa/v3/discord"
 )

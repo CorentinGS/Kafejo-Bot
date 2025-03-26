@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/corentings/kafejo-bot/app/commands/karmacommand"
 	"github.com/corentings/kafejo-bot/app/commands/versioncommand"
 	"github.com/corentings/kafejo-bot/app/handler"
 	"github.com/corentings/kafejo-bot/utils"
@@ -19,7 +18,6 @@ var commands = []api.CreateCommandData{
 	{Name: "ping", Description: "Ping!"},
 	{Name: "coffee", Description: "Get a cup of coffee"},
 	versioncommand.GetCommandData(),
-	karmacommand.GetCommandData(),
 }
 
 func GetCommands() []api.CreateCommandData {
@@ -31,7 +29,6 @@ func NewHandler(s *state.State) *handler.CommandHandler {
 	h.AddFunc("ping", pingCommandHandler())
 	h.AddFunc("coffee", CoffeeCommandHandler())
 	registerVersion(h)
-	registerKarma(h)
 	return h
 }
 

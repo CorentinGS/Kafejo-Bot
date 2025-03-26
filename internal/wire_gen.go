@@ -7,24 +7,11 @@
 package internal
 
 import (
-	"github.com/corentings/kafejo-bot/app/commands/karmacommand"
 	"github.com/corentings/kafejo-bot/app/commands/versioncommand"
 	"github.com/corentings/kafejo-bot/app/handler"
-	"github.com/corentings/kafejo-bot/infrastructures"
-	"github.com/corentings/kafejo-bot/internal/karma"
 )
 
 // Injectors from wire.go:
-
-// InitializeUser initializes the user controller.
-func InitializeKarma() karmacommand.Command {
-	db := infrastructures.GetDBConn()
-	iRepository := karma.NewSQLRepository(db)
-	iUseCase := karma.NewUseCase(iRepository)
-	iHandler := handler.GetHandler()
-	command := karmacommand.NewCommand(iUseCase, iHandler)
-	return command
-}
 
 func InitializeVersion() versioncommand.Command {
 	iHandler := handler.GetHandler()

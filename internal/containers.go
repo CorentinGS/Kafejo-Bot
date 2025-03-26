@@ -3,22 +3,17 @@ package internal
 import (
 	"sync"
 
-	"github.com/corentings/kafejo-bot/app/commands/karmacommand"
 	"github.com/corentings/kafejo-bot/app/commands/versioncommand"
 )
 
 // ServiceContainer is the service container interface.
 type ServiceContainer interface {
-	GetKarma() karmacommand.Command // GetKarma returns the karma command.
 	GetVersion() versioncommand.Command
 }
 
 type kernel struct{}
 
 // GetKarma returns the karma command.
-func (kernel) GetKarma() karmacommand.Command {
-	return InitializeKarma()
-}
 
 func (kernel) GetVersion() versioncommand.Command {
 	return InitializeVersion()
