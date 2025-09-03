@@ -2,7 +2,7 @@ module github.com/corentings/kafejo-bot
 
 go 1.23.0
 
-toolchain go1.24.4
+toolchain go1.25.1
 
 require (
 	github.com/diamondburned/arikawa/v3 v3.5.0
