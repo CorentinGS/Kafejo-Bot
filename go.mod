@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.24.4
 
 require (
-	github.com/diamondburned/arikawa/v3 v3.5.0
+	github.com/diamondburned/arikawa/v3 v3.6.0
 	github.com/google/wire v0.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/rs/zerolog v1.34.0
